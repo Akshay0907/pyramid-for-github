@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunksakai=self.webpackChunksakai||[]).push([[874],{1874:(Z,u,o)=>{o.d(u,{$9:()=>$});var l=o(1223),_=o(9808),m=o(2047),d=o(5787),p=o(4119);let $=(()=>{class t{}return t.\u0275fac=function(e){return new(e||t)},t.\u0275mod=l.oAB({type:t}),t.\u0275inj=l.cJS({imports:[_.ez,m.Bz,d.T,p.z,m.Bz,p.z]}),t})()}}]);
