@@ -1,0 +1,386 @@
+<div class="grid row">
+
+    <div class="col-12">
+
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-3" >
+                <div class="row p-fluid p-formgrid grid field col-12">
+                <div class="field col-12 md:col-10" >
+
+                    <h4 class="mb-4  font-family: Open Sans, sans-serif;">Conveyance Report</h4>
+
+                </div>
+                <div class="field col-12 md:col-2">
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
+                    (click)="downloadCsv()"
+                    ></button>
+                </div>
+            </div>
+
+                    <div class="row red">
+
+                        <h5 class="ml-4 mt-2">Filters</h5>
+                        <div class="p-fluid p-formgrid grid" >
+                            <div class="field col-12 md:col-2 ml-4" >
+                                <label  htmlFor="firstname2">From</label>
+                                <p-calendar
+                                 inputId="dob" dateFormat="dd/mm/yy" (onSelect)="dateFromFilter($event)" class="ng-invalid " [(ngModel)]="dateFromFilterVariable" [showIcon]="false"></p-calendar>
+                            </div>
+                            <div class="field col-12 md:col-2">
+                                <label htmlFor="middlename">To</label>
+                                <p-calendar
+                                 inputId="dob" dateFormat="dd/mm/yy" (onSelect)="dateToFilter($event)"  class="ng-invalid " [(ngModel)]="dateToFilterVariable" [showIcon]="false"></p-calendar>
+                            </div>
+                            <div class="field col-12 md:col-2">
+                                <label htmlFor="lastname">Branch</label>
+                                <!-- <p-dropdown [options]="branchList"  label="name"
+                                        placeholder="Select"  [editable]="false" [(ngModel)]="branchFilterVariable" (onChange)="branchFilter($event)"
+                                        optionLabel="name"></p-dropdown> -->
+                                        <p-multiSelect [options]="branchList"  defaultLabel="Select a Branch"(onChange)="branchFilter($event)" (onDeselect)="branchFilter($event)" optionLabel="name" display="chip"></p-multiSelect>
+                            </div>
+                            <div class="field col-12 md:col-1 mt-4">
+                                <button pButton pRipple pTooltip="Clear All Filters" icon="pi pi-filter-slash" class="p-button-rounded p-button-outline mr-3" (click)="clearAllFilters()"></button>
+                            </div>
+                            <div class="field col-12 md:col-2">
+
+                            </div>
+
+                            <div class="field col-12 md:col-2 ml-8 mt-4">
+
+                                <span class=" mt-2 md:mt-0 p-input-icon-left">
+
+                                    <i class="pi pi-search"></i>
+
+                                    <input pInputText type="text" (input)="forSearch($event)" placeholder="Search..."  class="w-full sm:w-auto mr-3"/>
+
+                                </span>
+
+
+                            </div>
+
+
+                        </div>
+
+                </div>
+
+
+            </p-toolbar>
+            <p-table #dt [value]="rides"   responsiveLayout="scroll" [rows]="10" (onPageChange)="checkBranch($event)" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10,20,30]"  [paginator]="false"  [showCurrentPageReport]="true"  [(selection)]="selectedRide" selectionMode="multiple" [rowHover]="true" >
+
+
+                <ng-template pTemplate="header">
+
+                    <tr>
+
+
+                        <th rowspan="2" style="width:14%; min-width: 10rem;">
+
+                            <div class="flex justify-content-between align-items-center">
+
+                                Date
+
+                            </div>
+
+                        </th>
+                        <th rowspan="2" style="width:14%; min-width: 10rem;">
+                            <div class="flex justify-content-between align-items-center">
+                                Employee Code
+
+                            </div>
+                        </th>
+                      <th rowspan="2" style="width:14%; min-width: 10rem;">
+                             <div class="flex justify-content-between align-items-center">
+                                 Staff Name
+
+                             </div>
+                         </th>
+                         <th rowspan="2" style="width:14%; min-width: 10rem;">
+                            <div class="flex justify-content-between align-items-center">
+                               Vehicle Number
+
+                            </div>
+                        </th>
+                        <th rowspan="2" style="width:14%; min-width: 10rem;">
+                            <div class="flex justify-content-between align-items-center">
+                               Branch Name
+
+                            </div>
+                        </th>
+                             <th colspan="2" style="width:14%; min-width: 10rem;">
+                                <div class="flex justify-content-between align-items-center">
+                                    In
+                                 </div>
+                         </th>
+                        <th colspan="2" style="width:14%; min-width: 10rem;">
+                         <div class="flex justify-content-between align-items-center">
+                                Out
+                            </div>
+                         </th>
+                        <th rowspan="3" style="width:14%; min-width: 10rem;">
+
+                            <div class="flex justify-content-between align-items-center">
+
+                                Running KM
+                            </div>
+
+                        </th>
+                        <th rowspan="4" style="width:14%; min-width: 10rem;">
+
+                            <div class="flex justify-content-between align-items-center">
+
+                                Sanction KM
+
+                              </div>
+
+                        </th>
+                        <th rowspan="5" style="width:14%; min-width: 10rem;">
+
+                            <div class="flex justify-content-between align-items-center">
+
+                                Reimburement Amount
+                            </div>
+
+                        </th>
+
+                        <th rowspan="6" style="width:14%; min-width: 10rem;">
+
+                            <div class="flex justify-content-between align-items-center">
+
+                                Map
+
+
+
+                            </div>
+
+                        </th>
+
+                    <th rowspan="7" style="width:14%; min-width: 10rem;"></th>
+
+                    </tr>
+                <tr>
+
+    <th style="width:14%; min-width: 10rem;">Time</th>
+
+    <th style="width:14%; min-width: 10rem;">Location</th>
+
+
+
+    <th style="width:14%; min-width: 10rem;">Time</th>
+
+    <th style="width:14%; min-width: 10rem;">Location</th>
+
+
+
+</tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rides>
+
+                    <tr>
+
+
+                        <td>{{rides.rideDate | date: 'dd/MM/yyyy'}}</td>
+                        <td>{{rides.employeeCode}}</td>
+
+                        <td>{{rides.staffName}}</td>
+
+                        <td>{{rides.vehicleNumber}}</td>
+
+                        <td>{{rides.branchName}}</td>
+
+                        <td>{{rides.rideStartTime}}</td>
+
+                        <td>{{rides.startLocation}}</td>
+
+                        <td>{{rides.rideEndTime}}</td>
+
+                        <td>{{rides.endLocation}}</td>
+
+                        <td>{{rides.rideDistance | number: '1.2-2'}}</td>
+
+                        <td>{{rides.sanctionDistance | number: '1.2-2'}}</td>
+
+                        <td>{{rides.reimbursementCost}}</td>
+
+                        <td> <p-image [hidden]="!rides.snapShot" src='{{rides.snapShot}}'  width="100" height="100"  [preview]="rides.snapShot"></p-image>
+                        </td>
+
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple pTooltip="Edit" icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRideInHeader(rides)"></button>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                </ng-template>
+            </p-table>
+
+            <p-paginator [rows]="10" (onPageChange)="checkBranch($event)" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10,20,30]"></p-paginator>
+                <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Ride Details" [modal]="true" class="p-fluid">
+
+                    <ng-template pTemplate="content">
+
+                        <form [formGroup]="addConveyanceForm">
+
+                            <img  src="assets/layout/images/{{'true' ? 'pyramidlogo' : 'pyramidlogo'}}.jpg"  width="150" class="mt-0 mx-auto mb-5 block shadow-2" >
+                            <!-- <div class="field" >
+                                <label for="dateCreated">Date</label>
+                                <input type="text" pInputText id="dateCreated" formControlName="dateCreated"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addAttendenceForm.value.dateCreated}"/>
+                                <div style="color:red" *ngIf="!addAttendenceForm.controls['dateCreated'].valid&&submitted">Please enter a valid first name</div>
+                                <!-<small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> ->
+                            </div> -->
+                            <div class="field" >
+                                <label for="rideDate">Ride Date</label>
+                                <p-calendar [showIcon]="true" formControlName="rideDate" dateFormat="mm-dd-yy" inputId="dateformat" autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addConveyanceForm.value.rideDate}"></p-calendar>
+                                <div style="color: red" *ngIf="submitted && !addConveyanceForm.controls['rideDate'].valid">Date is required.</div>
+
+                            </div>
+
+                            <div class="field" >
+                                <label for="employeeRide">Employee Ride</label>
+                                <input type="text" pInputText id="employeeRide" formControlName="employeeRide"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addConveyanceForm.value.employeeRide}"/>
+                                <div style="color: red;" *ngIf="addConveyanceForm.controls['employeeRide'].touched && !addConveyanceForm.controls['employeeRide'] ">Please enter a valid input</div>
+                            </div>
+
+                            <div class="field" >
+                                <label for="rideStartTime">In Time</label>
+                                <p-calendar [showTime]="true" [showSeconds]="true" inputId="rideStartTime" formControlName="rideStartTime"></p-calendar>
+                                <div style="color:red" *ngIf="addConveyanceForm.controls['rideStartTime'].touched && !addConveyanceForm.controls['rideStartTime'] && submitted">Please enter a valid input</div>
+
+                                <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> -->
+                            </div>
+
+                            <div class="field" >
+                                <label for="rideEndTime">Out Time</label>
+                                <p-calendar [showTime]="true" [showSeconds]="true" inputId="rideEndTime" formControlName="rideEndTime"></p-calendar>
+                                <div style="color:red" *ngIf="addConveyanceForm.controls['rideEndTime'].touched && !addConveyanceForm.controls['rideEndTime'] &&  submitted">Please enter a valid input</div>
+                                <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> -->
+                            </div>
+
+                            <div class="field" >
+                                <label for="rideDistance">Running KM</label>
+                                <input type="text" pInputText id="rideDistance" formControlName="rideDistance"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addConveyanceForm.value.rideDistance}"/>
+                                <div style="color:red" *ngIf="addConveyanceForm.controls['rideDistance'].touched && !addConveyanceForm.controls['rideDistance'] && submitted">Please enter a valid input</div>
+                                <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> -->
+                            </div>
+
+                            <div class="field" >
+                                <label for="sanctionDistance">Sanction KM</label>
+                                <input type="text" pInputText id="sanctionDistance" formControlName="sanctionDistance"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addConveyanceForm.value.sanctionDistance}"/>
+                                <div style="color:red" *ngIf="addConveyanceForm.controls['sanctionDistance'].touched && !addConveyanceForm.controls['sanctionDistance'] && submitted">Please enter a valid input</div>
+                                <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> -->
+                            </div>
+
+                            <div class="field" >
+                                <label for="rideCost">Conveyance Amount</label>
+                                <input type="text" pInputText id="rideCost" formControlName="rideCost"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addConveyanceForm.value.rideCost}"/>
+                                <div style="color:red" *ngIf="addConveyanceForm.controls['rideCost'].touched && !addConveyanceForm.controls['rideCost'] && submitted">Please enter a valid input</div>
+                                <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> -->
+                            </div>
+
+                            <div class="field" >
+                                <label for="reason">Reason</label>
+                                <input type="text" pInputText id="reason" formControlName="reason"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addConveyanceForm.value.reason}"/>
+                                <div style="color:red" *ngIf="addConveyanceForm.controls['reason'].touched && !addConveyanceForm.controls['reason'] && submitted">Please enter a valid input</div>
+                                <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> -->
+                            </div>
+
+                        </form>
+
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                        <button  pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" ></button>
+                    </ng-template>
+
+                </p-dialog>
+
+                <p-dialog [(visible)]="productDialogForEdit" [style]="{width: '450px'}" header="Ride Details" [modal]="true" class="p-fluid">
+
+                    <ng-template pTemplate="content">
+
+                        <form [formGroup]="editConveyanceForm">
+
+                            <img src="assets/layout/images/{{'true' ? 'pyramidlogo' : 'pyramidlogo'}}.jpg"  width="150" class="mt-0 mx-auto mb-5 block shadow-2" >
+                            <!-- <div class="field" >
+                                <label for="dateCreated">Date</label>
+                                <input type="text" pInputText id="dateCreated" formControlName="dateCreated"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addAttendenceForm.value.dateCreated}"/>
+                                <div style="color:red" *ngIf="!addAttendenceForm.controls['dateCreated'].valid&&submitted">Please enter a valid first name</div>
+                                <!-<small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> ->
+                            </div> -->
+                            <!-- <div class="field" >
+                                <label for="rideDate">Ride Date</label>
+                                <p-calendar [showIcon]="true" formControlName="rideDate" dateFormat="mm-dd-yy" inputId="dateformat" autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !editConveyanceForm.value.rideDate}"></p-calendar>
+                                <!- <div style="color: red" *ngIf="editConveyanceForm.controls['rideDate'].touched && !editConveyanceForm.controls['rideDate'] &&  && submitted">Please enter a valid input</div>
+
+                            </div>
+
+                            <div class="field" >
+                                <label for="employeeRide">Employee Ride</label>
+                                <input type="text" pInputText id="employeeRide.firstName" formControlName="employeeRide"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !editConveyanceForm.value.employeeRide}"/>
+                                <!-<div style="color:red" *ngIf="editConveyanceForm.controls['employeeRide'].touched && !editConveyanceForm.controls['employeeRide'] && submitted">Please enter a valid input</div>
+                                <!- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> ->
+                            </div>
+
+                            <div class="field" >
+                                <label for="rideStartTime">In Time</label>
+                                <p-calendar [showTime]="true" [showSeconds]="true" inputId="time" formControlName="rideStartTime"></p-calendar>
+                                <!--<div style="color:red" *ngIf="editConveyanceForm.controls['rideStartTime'].touched && !editConveyanceForm.controls['rideStartTime'] && submitted">Please enter a valid input</div>
+
+                                <!- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> ->
+                            </div>
+
+                            <div class="field" >
+                                <label for="rideEndTime">Out Time</label>
+                                <p-calendar [showTime]="true" [showSeconds]="true" inputId="time" formControlName="rideEndTime"></p-calendar>
+                                <!--<div style="color:red" *ngIf="editConveyanceForm.controls['rideEndTime'].touched && !editConveyanceForm.controls['rideEndTime'] && submitted">Please enter a valid input</div>
+                                <!- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> ->
+                            </div>
+
+                            <div class="field" >
+                                <label for="rideDistance">Running KM</label>
+                                <input type="text" pInputText id="rideDistance" formControlName="rideDistance"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !editConveyanceForm.value.rideDistance}"/>
+                                <div style="color:red" *ngIf="editConveyanceForm.controls['rideDistance'].touched && !editConveyanceForm.controls['rideDistance'] && submitted">Please enter a valid input</div>
+                                <!- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> ->
+                            </div> -->
+
+                            <div class="field" >
+                                <label for="sanctionDistance">Sanction KM</label>
+                                <input type="text" pInputText id="sanctionDistance" formControlName="sanctionDistance"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !editConveyanceForm.value.sanctionDistance}"/>
+                                <div style="color:red" *ngIf="editConveyanceForm.controls['sanctionDistance'].touched && !editConveyanceForm.controls['sanctionDistance'] && submitted">Please enter a valid input</div>
+                                <!--<small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> -->
+                            </div>
+
+                            <!-- <div class="field" >
+                                <label for="rideCost">Conveyance Amount</label>
+                                <input type="text" pInputText id="rideCost" formControlName="rideCost"  required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !editConveyanceForm.value.rideCost}"/>
+                                <!- <div style="color:red" *ngIf="editConveyanceForm.controls['rideCost'].touched && !editConveyanceForm.controls['rideCost'] && submitted">Please enter a valid input</div> -->
+                                <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> ->
+                            </div> -->
+
+                        </form>
+
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialogForEdit()"></button>
+                        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="editRide(editConveyanceForm.value.id,editConveyanceForm.value)"></button>
+                    </ng-template>
+
+                </p-dialog>
+<!--
+                <p-dialog [(visible)]="deleteProductDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                        <span *ngIf="rideObjectForCreate">Are you sure you want to delete <b>{{rideObjectForDelete.id}}</b>?</span>
+                    </div>
+                    <ng-template pTemplate="footer">
+                        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductDialog = false"></button>
+                        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+                    </ng-template>
+                </p-dialog> -->
+
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+p-dialog {
+    width: 80vw;
+    height: 70vh;
+  }
+
+  p-calendar {
+    width: calc(100% - 10vw); /* subtract 10% of viewport width from the width of the dialog */
+    height: calc(100% - 20vh); /* subtract 20% of viewport height from the height of the dialog */
+  }

@@ -1,0 +1,663 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <!-- <button type="button" label="Add New" pButton pRipple icon="pi pi-plus" class="p-button-success mr-2"  (click)="menu.toggle($event)"></button>
+                         <p-menu #menu [popup]="true" [model]="items"></p-menu> -->
+                        <!-- <p-splitButton type="button" label="Save"  icon="pi pi-plus" [model]="items" styleClass="p-button-success mr-2"></p-splitButton> -->
+                        <!-- <button pButton pRipple label="New Admin" icon="pi pi-plus" class="p-button-success mr-2"  (click)="openNew(addAdmin)"></button>
+                        <button pButton pRipple label="New Office Employee" icon="pi pi-plus" class="p-button-success mr-2"  (click)="openNew(addAdmin)"></button> -->
+                        <button pButton pRipple label="Add New" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="newForm()"></button>
+                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                            (click)="deleteselectedEmployees(selectedEmployees)"
+                            [disabled]="!selectedEmployees || !selectedEmployees.length"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+
+                    <p-fileUpload mode="basic" [customUpload]="true" [maxFileSize]="1000000" label="Import"
+                        chooseLabel="Import" [auto]="true" (uploadHandler)="myUploader($event)"
+                        (onUpload)="myUploader($event)" class="mr-2 inline-block"></p-fileUpload>
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
+                        (click)="downloadCsv()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="employee" scrollDirection="both" [scrollable]="true" responsiveLayout="scroll"
+                [rows]="10"
+                [globalFilterFields]="['firstName','middleName','lastName','','emailId','branchEmployee','primaryContactNo','secondaryContactNo','uid','employeeAddress','employeeVehicleVehicles']"
+                [rows]="10" [paginator]="false" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedEmployees" selectionMode="multiple" [rowHover]="false" dataKey="id">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Manage Employees</h5>
+                        <button pButton
+                            class="block mt-2 md:mt-0 p-input-icon-left w-full sm:w-auto p-button-outlined mr-2" pRipple
+                            label="Clear All Filters" (click)="clearAllFilters()"></button>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" [pKeyFilter]="blockOnSearch" (input)="checkpurpose($event)"
+                                placeholder="Search..." class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+
+                    <tr>
+                        <th style="width:3rem" pFrozenColumn [frozen]="!mobile" *ngIf="!mobile">
+                            <p-tableHeaderCheckbox pFrozenColumn [frozen]="!mobile" *ngIf="!mobile">
+                            </p-tableHeaderCheckbox>
+                        </th>
+                        <th class="header-style" (click)="sorting($event,'empNo')" [frozen]="!mobile"
+                            pFrozenColumn pSortableColumn alignFrozen="left">Employee Number <p-sortIcon
+                                field="employee.empNo">
+
+                            </p-sortIcon>
+                        </th>
+                        <th class="header-style" [frozen]="!mobile" pFrozenColumn aria-sort="ascending"
+                            pSortableColumn (click)="sorting($event,'firstName')" alignFrozen="left">Name <p-sortIcon
+                                field="firstName"></p-sortIcon>
+                        </th>
+                        <th class="header-style">Image</th>
+                        <th style="width:12%; min-width:10rem;" (click)="sorting($event,'emailId')" pSortableColumn>Email
+                            Id <p-sortIcon field="emailId"></p-sortIcon>
+                        </th>
+                        <!-- <th pSortableColumn="branchEmployee">Branch Name <p-sortIcon field="branchEmployee"></p-sortIcon></th> -->
+                        <th class="header-style" >
+                            Branch Name
+                            <!-- <button type="button"  pButton pRipple icon="pi pi-plus" class="p-button-outlined mr-2"  (click)="menu.toggle($event)"></button>
+                         <p-menu #menu [popup]="true" [model]="items"></p-menu> -->
+                            <!-- <p-columnFilter [showMatchModes]="false" [showOperator]="false" [showAddButton]="false"  [matchModeOptions]="branch" type="text" field="branchEmployee.name" display="menu" placeholder="Search by branch name"> -->
+                            <!-- <p-dropdown  [filter]="true" filterBy="label" formControlName="state" placeholder = "Select State"  [options]="stateList" [(ngModel)]="selectedState"
+                            (onChange)="getDistricts()"></p-dropdown> -->
+                            <p-columnFilter field="representative" [showApplyButton]="false" [showClearButton]="false"
+                                matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false"
+                                [showAddButton]="false">
+                                <ng-template pTemplate="header">
+                                    <div class="px-3 pt-3 pb-0">
+                                        <span class="font-bold">Branch Picker</span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <!-- <p-multiSelect [ngModel]="branch"  [options]="branchList" placeholder="Any" (onChange)="sorting($event,'emailId')" optionLabel="name">
+                                    <ng-template let-option pTemplate="item" (click)="sorting($event,'emailId')">
+                                        <div class="p-multiselect-representative-option">
+                                            <span class="ml-2">{{option.name}}</span>
+                                        </div>
+                                    </ng-template>
+                                </p-multiSelect> -->
+                                <p-multiSelect [options]="branchList"  defaultLabel="Select a Branch"(onChange)="branchFilter($event)" (onDeselect)="branchFilter($event)" optionLabel="name" display="chip"></p-multiSelect>
+                                    <!-- <p-dropdown [options]="branchList" [(ngModel)]="eventa.branch" label="name"
+                                        placeholder="Select" (onChange)="branchFilter($event)" [editable]="false"
+                                        optionLabel="name"></p-dropdown> -->
+                                </ng-template>
+                            </p-columnFilter>
+                        </th>
+                        <th class="header-style" >
+                            Role <p-columnFilter type="text" matchMode="in" field="role" display="menu"
+                                placeholder="Search by branch name" [showMatchModes]="false" [showOperator]="false"
+                                [showAddButton]="false">
+
+                                <ng-template pTemplate="header">
+                                    <div class="px-3 pt-3 pb-0">
+                                        <span class="font-bold">Role Picker</span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <!-- <p-multiSelect [ngModel]="branch"  [options]="branchList" placeholder="Any" (onChange)="sorting($event,'emailId')" optionLabel="name">
+                                            <ng-template let-option pTemplate="item" (click)="sorting($event,'emailId')">
+                                                <div class="p-multiselect-representative-option">
+                                                    <span class="ml-2">{{option.name}}</span>
+                                                </div>
+                                            </ng-template>
+                                        </p-multiSelect> -->
+                                    <p-dropdown [options]="role" placeholder="Select" [(ngModel)]="eventa.role"
+                                        (onChange)="roleFilter($event)" [editable]="false" optionLabel="label">
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </th>
+                        <th class="header-style" >Contact Number </th>
+                        <th class="header-style">Aadhar Card </th>
+                        <th style="width:10%; min-width:10rem;">Employee Address </th>
+                        <th class="header-style">conveyance
+                            <p-columnFilter type="text" field="userEmployee.conveyanceApplicable" matchMode="in"
+                                display="menu" laceholder="Search by conveyance Applicable" [showMatchModes]="false"
+                                [showOperator]="false" [showAddButton]="false">
+                                <ng-template pTemplate="header">
+                                    <div class="px-3 pt-3 pb-0">
+                                        <span class="font-bold">Role Picker</span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+
+                                    <p-dropdown [options]="conveyance" [(ngModel)]="eventa.conveyanceApplicable"
+                                        placeholder="Select" (onChange)="conveyanceFilter($event)" [editable]="false"
+                                        optionLabel="label"></p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+
+                        </th>
+                        <th class="header-style">Vehicle </th>
+
+                        <th style="width:11%; min-width:10rem;" *ngIf="!mobile" [frozen]="!mobile" pFrozenColumn
+                            alignFrozen="right"></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-employee>
+
+                    <tr >
+
+                        <td pFrozenColumn [frozen]="!mobile" *ngIf="!mobile" style="z-index: 99;width:3rem;">
+                            <p-tableCheckbox style="width:3rem;" pFrozenColumn [frozen]="!mobile" [value]="employee">
+                            </p-tableCheckbox>
+                        </td>
+                        <td class="header-style" pFrozenColumn [frozen]="!mobile"
+                            style="z-index: 99;"><span class="p-column-title">Employee Number</span>
+                            {{employee.empNo}}
+                        </td>
+                        <td class="header-style" pFrozenColumn [frozen]="!mobile" style="z-index: 99;">
+                            <span class="p-column-title">Name</span>
+                            {{employee.firstName}} {{employee.middleName}} {{employee.lastName}}
+                        </td>
+                        <td class="header-style"><span class="p-column-title " >Image</span>
+
+                            <p-image class="img"  src='{{employee.profile}}'   width="100" height="100" [preview]="employee.profile"></p-image>
+
+                        </td>
+                        <td style="width:12%; min-width:10rem;">
+                            <span class="p-column-title">Email Id</span>
+                            {{employee.emailId}}
+                        </td>
+                        <td class="header-style">
+                            <span class="p-column-title">Branch Name</span>
+                            {{employee.branchEmployee.name}}
+                        </td>
+                        <td class="header-style">
+                            <span class="p-column-title">Role</span>
+                            {{employee.role}}
+                        </td>
+                        <td class="header-style">
+                            <span class="p-column-title"> Contact Number</span>
+                            {{employee.primaryContactNo}}<br> {{employee.secondaryContactNo}}
+                        </td>
+                        <td  class="header-style">
+                            <span class="p-column-title">Aadhar Card</span>
+                            {{employee.uid}}
+                        </td>
+                        <td  style="width:10%; min-width:11rem;">
+                            <span class="p-column-title"> Address</span>
+                            {{employee.employeeAddress.address}}<br>
+                            {{employee.employeeAddress.village}}<br>{{employee.employeeAddress.city}}<br>{{employee.employeeAddress.district}}<br>{{employee.employeeAddress.state}}
+                        </td>
+                        <td  class="header-style">
+                            <span class="p-column-title">Conveyance Applicable</span>
+                            {{employee.userEmployee.conveyanceApplicable}}
+                        </td>
+                        <td  class="header-style">
+                            <span class="p-column-title"> Vehicle</span>
+
+                            <div *ngIf="employee.employeeVehicle!=null">
+                                {{ employee.employeeVehicle.vehicleName }}
+                                {{ employee.employeeVehicle.vehicleNumber }}
+
+                            </div>
+
+                            <!-- {{employee.employeeVehicleVehicles}} -->
+                        </td>
+                        <!-- <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Contact Number</span>
+                            <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
+                        </td> -->
+                        <!-- <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Status</span>
+                            <span [class]="'product-badge status-' + (product.inventoryStatus ? product.inventoryStatus.toLowerCase() : '')">{{product.inventoryStatus}}</span>
+                        </td> -->
+                        <td pFrozenColumn alignFrozen="right" style="width:11%; min-width:10rem;" *ngIf="!mobile">
+
+                            <div class="flex" pFrozenColumn alignFrozen="right" *ngIf="!mobile">
+                                <button pButton pRipple icon="pi pi-pencil" pTooltip="Edit Details"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editProduct(employee)"></button>
+                                <button pButton pRipple icon="pi pi-trash" pTooltip="Delete"
+                                    class="p-button-rounded p-button-warning mr-2"
+                                    (click)="  deletingEmployee(employee.id)"></button>
+                                <button pButton pRipple icon="pi pi-key" class="p-button-rounded p-button-danger mr-2" pTooltip="Change Password"
+                                    (click)="hideOtherFields(employee)"></button>
+                                    <button *ngIf="employee.block" pButton pRipple icon="pi pi-lock" class="p-button-rounded p-button-help mr-2" pTooltip="Blocked"
+                                    (click)="unBlockUser(employee.userEmployee.userName)"></button>
+                                    <button *ngIf="!employee.block" pButton pRipple icon="pi pi-unlock" class="p-button-rounded p-button-help mr-2" pTooltip="Unbloked"
+                                     disabled></button>
+
+                                <!-- <button type="toggleButton" onIcon="pi pi-lock" offIcon="pi pi-unlock" pButton pRipple  class="p-button-rounded p-button-help mr-2"></button> -->
+                                <!-- <p-toggleButton class="p-button-rounded p-button-help mr-2" onIcon="pi pi-lock" offIcon="pi pi-unlock" ></p-toggleButton> -->
+                            </div>
+
+                        </td>
+                    </tr>
+                    <p-dialog [(visible)]="unBlockDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+                        <div class="flex align-items-center justify-content-center">
+                            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                            <span >Do you want to unblock this user</span>
+                        </div>
+                        <ng-template pTemplate="footer">
+                            <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                                (click)="unBlockDialog = false"></button>
+                            <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                                (click)="unBlockEmployee()"><</button>
+                        </ng-template>
+                    </p-dialog>
+                </ng-template>
+
+
+            </p-table>
+            <!-- <p-paginator [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,20,30]"
+            (onPageChange)="checkBranch($event)"
+            [rows]="10"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          ></p-paginator> -->
+            <p-paginator [rows]="10" (onPageChange)="checkBranch($event)" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [totalRecords]="totalRecords" [rowsPerPageOptions]="[10,20,30]"></p-paginator>
+        </div>
+
+        <p-dialog [(visible)]="productDialog" (onHide)="hideDialog()" [style]="{width: '450px'}"
+            header="Employee Details" [modal]="true" class="p-fluid">
+
+
+
+            <ng-template pTemplate="content">
+                <form [formGroup]="addEmployeeForm" #f="ngForm">
+                    <img src="assets/layout/images/{{'true' ? 'pyramidlogo' : 'pyramidlogo'}}.jpg" width="150"
+                        class="mt-0 mx-auto mb-5 block shadow-2">
+                    <div class="field" *ngIf="showFields">
+                        <label for="firstName">First Name</label>
+                        <input type="text" pInputText id="firstName" (ngModelChange)="setuserName()"
+                            [pKeyFilter]="blockSpecialNumber" formControlName="firstName" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.firstName}" />
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['firstName'].valid&&submitted">Please
+                            enter a valid first name</div>
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.firstName">First Name is required.</small> -->
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="middleName">Middle Name</label>
+                        <input type="text" pInputText id="middleName" [pKeyFilter]="blockSpecialNumber"
+                            formControlName="middleName" autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.middleName}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.middleName">Middle Name is required.</small> -->
+                        <!-- <div style="color:red" *ngIf="!addEmployeeForm.controls['middleName'].valid&&submitted">Please enter a valid middle name</div> -->
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" pInputText id="lastName" [pKeyFilter]="blockSpecialNumber"
+                            formControlName="lastName" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.lastName}" />
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['lastName'].valid&&submitted">Please
+                            enter a valid last name</div>
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.lastName">Last Name is required.</small> -->
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="fatherName">Father Name</label>
+                        <input type="text" pInputText id="fatherName" [pKeyFilter]="blockSpecialNumber"
+                            formControlName="fatherName" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.fatherName}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.fatherName">Father Name is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['fatherName'].valid&&submitted">Please
+                            enter a valid father name</div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="dob">Date of Birth</label>
+
+                        <p-calendar [showIcon]="true" id="dob" formControlName="dob" autofocus dateFormat="dd/mm/yy"
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.dob}"></p-calendar>
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !addEmployeeForm.value.dob">DOB is
+                            required.</small>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="uid">Aadhar</label>
+                        <input type="text" pInputText id="uid" formControlName="uid" required autofocus pKeyFilter="int"
+                            maxlength="12"
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.uid}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.uid">Aadhar number is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['uid'].valid  && submitted">Please Enter
+                            a valid Adhar Card Number </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="primaryContactNo">Primary Contact Number</label>
+                        <input type="text" pInputText id="primaryContactNo" formControlName="primaryContactNo" required
+                            autofocus pKeyFilter="int" maxlength="10"
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.primaryContactNo}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.primaryContactNo">Primary Contact Number is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['primaryContactNo'].valid && submitted">
+                            Please enter a valid Contact number </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="secondaryContactNo">Secondary Contact Number</label>
+                        <input type="text" pInputText id="secondaryContactNo" formControlName="secondaryContactNo"
+                            autofocus pKeyFilter="int" maxlength="10"
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.secondaryContactNo}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.secondaryContactNo">Secondary Contact Number is required.</small> -->
+                        <div style="color:red"
+                            *ngIf="!addEmployeeForm.controls['secondaryContactNo'].valid && submitted">Please enter a
+                            valid Secondary Contact number </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="emailId">Email Id</label>
+                        <input type="text" pInputText id="emailId" formControlName="emailId" quired autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.emailId}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.emailId">Email Id is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['emailId'].valid && submitted">Please
+                            enter a valid Email id </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="houseNo">Address</label>
+                        <textarea id="houseNo" pInputTextarea formControlName="houseNo" required rows="3"
+                            cols="20"></textarea>
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['houseNo'].valid && submitted">Please
+                            enter Address </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="village">Village</label>
+                        <input type="text" pInputText id="village" formControlName="village" autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.village}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeAddress.village">Village is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['village'].valid && submitted">Please
+                            enter village </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="city">City</label>
+                        <input type="text" pInputText id="city" formControlName="city" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.city}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeAddress.city">City is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['city'].valid && submitted">Please enter
+                            city </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="permanentAddressState">State</label>
+                        <p-dropdown [filter]="true" filterBy="label" formControlName="state" placeholder="Select State"
+                            [options]="stateList" (onChange)="getDistricts()"></p-dropdown>
+
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeAddress.state">State is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['state'].valid && submitted">Please
+                            enter State </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="permanentAddressDistrict">District</label>
+
+                        <p-dropdown [filter]="true" filterBy="label" formControlName="district"
+                            placeholder="Select District" [options]="DistrictList"></p-dropdown>
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['district'].valid && submitted">Please
+                            enter District </div>
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeAddress.district">District is required.</small> -->
+                    </div>
+
+                    <div class="field" *ngIf="showFields">
+                        <label for="branch">Branch</label>
+
+                        <p-dropdown [filter]="true" filterBy="label" formControlName="branch" optionValue="id"
+                            placeholder="Select Branch" [options]=" branchList" optionLabel="name"> </p-dropdown>
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['branch'].valid && submitted">Please
+                            enter Branch </div>
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeAddress.district">District is required.</small> -->
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="role">Role</label>
+                        <p-selectButton [options]="role" formControlName="role" optionLabel="label" optionValue="value">
+                        </p-selectButton>
+                        <!-- <p-dropdown   [filter]="true" filterBy="label" formControlName="role"  placeholder = "Select Role" [options]="role"
+                    ></p-dropdown> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['role'].valid && submitted">Please enter
+                            Role </div>
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeAddress.district">District is required.</small> -->
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="empno">Employee Number</label>
+                        <input type="text" pInputText id="empno" (ngModelChange)="setuserName()" formControlName="empNo"
+                            required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.empNo}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.empNo">Employee Number is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['empNo'].valid && submitted">Please
+                            enter Employee Number </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="userName">User Name</label>
+                        <input type="text" pInputText id="userName" formControlName="userName" [(ngModel)]="userName"
+                            Disabled autofocus />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.userEmployee.userName">User Name is required.</small> -->
+                        <!-- <div style="color:red" *ngIf="!addEmployeeForm.controls['userName'].valid && submitted">Please enter User Name </div> -->
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label class="mr-3">Conveyance Applicable</label>
+
+                        <p-checkbox formControlName="conveyanceApplicable" (onChange)="checkConveyance($event)"
+                            [binary]="true" inputId="binary"></p-checkbox>
+
+                        <!--
+                    <div class="p-field-radiobutton">
+                        <p-radioButton name="conveyanceApplicable" value=true (onClick)="checkConveyance('true')" formControlName="conveyanceApplicable" [(ngModel)]="value"  inputId="c1"></p-radioButton>
+                        <label for="c1">Yes</label>
+                    </div>
+                    <div class="p-field-radiobutton">
+                        <p-radioButton name="conveyanceApplicable" value=false (onClick)="checkConveyance('false')" formControlName="conveyanceApplicable" [(ngModel)]="value"  inputId="c2"></p-radioButton>
+                        <label for="c2">No</label>
+                    </div> -->
+                        <div style="color:red"
+                            *ngIf="!addEmployeeForm.controls['conveyanceApplicable'].valid && submitted">Please choose
+                            Conveyance </div>
+                        <!-- <p-radioButton  name="conveyanceApplicable" (onchange)="checkConveyance()" value="true" [(ngModel)]="employeeObject.userEmployee.conveyanceApplicable" inputId="conveyanceApplicable"></p-radioButton>
+                        <label for="conveyanceApplicable"> Yes</label>
+                        <p-radioButton  name="conveyanceApplicable" (onchange)="checkConveyance()" checked="true" value="false" [(ngModel)]="employeeObject.userEmployee.conveyanceApplicable" inputId="conveyanceApplicable"></p-radioButton>
+                        <label for="conveyanceApplicable"> No</label> -->
+
+                        <!-- <input type="text" pInputText id="conveyanceApplicable" [(ngModel)]="employeeObject.userEmployee.conveyanceApplicable" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !employeeObject.userEmployee.conveyanceApplicable}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.userEmployee.conveyanceApplicable">Conveyance Applicable is required.</small> -->
+                    </div>
+                    <div class="field" *ngIf="showPassword">
+                        <label for="passHash">Password</label>
+                        <input type="text" placeholder="Password" pInputText id="passHash" formControlName="passhash"
+                            required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.passhash}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.userEmployee.passHash">Password is required.</small> -->
+                        <div style="color:red" *ngIf="!addEmployeeForm.controls['passhash'].valid && submitted">Please
+                            enter Password </div>
+                    </div>
+                    <p-toolbar *ngIf="!vehicleDisable">
+                    <div class="field" *ngIf="showFields">
+                        <label for="vehicleName">Vehicle Name</label>
+                        <input type="text" pInputText id="vehicleName" formControlName="vehicleName"
+                            [attr.disabled]="vehicleDisable?true:null" autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.vehicleName}" />
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeVehicle.vehicleName">Vehicle Name is required.</small> -->
+                        <div style="color:red"
+                            *ngIf="!addEmployeeForm.controls['vehicleName'].valid && submitted&&vehicleDisable">Please
+                            enter Vehicle Name </div>
+                    </div>
+                    <div class="field" *ngIf="showFields">
+                        <label for="vehicleNumber">Vehicle Number(RJ-14-CB-2345)</label>
+                        <!-- <input type="text" pInputText id="vehicleNumber"  formControlName="vehicleNumber" [attr.disabled]="vehicleDisable?true:null" autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.vehicleNumber}"/> -->
+                        <p-inputMask inputId="inputmask" mask="aa-99-aa-9999" formControlName="vehicleNumber"
+                            [disabled]="vehicleDisable" autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !addEmployeeForm.value.vehicleNumber}">
+                        </p-inputMask>
+                        <!-- <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeVehicle.vehicleNumber">Vehicle Number is required.</small> -->
+                        <div style="color:red"
+                            *ngIf="!addEmployeeForm.controls['vehicleNumber'].valid && submitted&&!vehicleDisable">
+                            Please enter valid Vehicle Number </div>
+                    </div></p-toolbar>
+
+                    <!-- <div class="field">
+                    <label for="vehicleName">Vehicle Name</label>
+                    <input type="text" pInputText id="vehicleName" [(ngModel)]="employeeObject.employeeVehicleVehicles.vehicleName" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !employeeObject.employeeVehicleVehicles.vehicleName}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeVehicleVehicles.vehicleName">First Name is required.</small>
+                </div>
+                <div class="field">
+                    <label for="vehicleNo">Vehicle Number</label>
+                    <input type="text" pInputText id="vehicleNo" [(ngModel)]="employeeObject.employeeVehicleVehicles.vehicleNo" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !employeeObject.employeeVehicleVehicles.vehicleNo}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeVehicleVehicles.vehicleNo">First Name is required.</small>
+                </div> -->
+                    <!-- <div class="field">
+                    <label for="userName">userName</label>
+                    <input type="text" pInputText id="userName" [(ngModel)]="employeeObject." required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !employeeObject.employeeAddress.city}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeAddress.city">First Name is required.</small>
+                </div>
+                <div class="field">
+                    <label for="city">City</label>
+                    <input type="text" pInputText id="city" [(ngModel)]="employeeObject.employeeAddress.city" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !employeeObject.employeeAddress.city}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !employeeObject.employeeAddress.city">First Name is required.</small>
+                </div> -->
+                    <!-- <div class="field">
+                    <label for="status">Inventory Status</label>
+                    <p-dropdown id="status" [options]="statuses" optionLabel="label" [(ngModel)]="product.inventoryStatus" placeholder="Select a Status">
+                        <ng-template pTemplate="selectedItem">
+                            <span *ngIf="product && product.inventoryStatus" [class]="'product-badge status-' + product.inventoryStatus.value.toLowerCase()">{{product.inventoryStatus.value}}</span>
+                        </ng-template>
+                        <ng-template let-status pTemplate="status">
+                            <span [class]="'product-badge status-' + status.value.toLowerCase()">{{status.label}}</span>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+
+                <div class="field">
+                    <label class="mb-3">Category</label>
+                    <div class="formgrid grid">
+                        <div class="field-radiobutton col-6">
+                            <p-radioButton id="category1" name="category" value="Accessories" [(ngModel)]="product.category"></p-radioButton>
+                            <label for="category1">Accessories</label>
+                        </div>
+                        <div class="field-radiobutton col-6">
+                            <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="product.category"></p-radioButton>
+                            <label for="category2">Clothing</label>
+                        </div>
+                        <div class="field-radiobutton col-6">
+                            <p-radioButton id="category3" name="category" value="Electronics" [(ngModel)]="product.category"></p-radioButton>
+                            <label for="category3">Electronics</label>
+                        </div>
+                        <div class="field-radiobutton col-6">
+                            <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="product.category"></p-radioButton>
+                            <label for="category4">Fitness</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="price">Price</label>
+                        <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
+                    </div>
+                    <div class="field col">
+                        <label for="quantity">Quantity</label>
+                        <p-inputNumber id="quantity" [(ngModel)]="product.quantity"></p-inputNumber>
+                    </div> -->
+                    <!-- </div> -->
+                </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton [disabled]="addEmployeeForm.invalid" pRipple label="Save" icon="pi pi-check"
+                    class="p-button-text" (click)="addEmployeeInProject()"></button>
+            </ng-template>
+
+        </p-dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- <p-dialog [(visible)]="deleteProductDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="product">Are you sure you want to delete <b>{{product.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog> -->
+
+        <p-dialog [(visible)]="deleteProductsDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Are you sure you want to delete selected products?</span>
+            </div>
+            <!-- <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductsDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSelected()"></button>
+            </ng-template> -->
+        </p-dialog>
+
+
+
+
+
+
+
+
+    </div>
+</div>
+
+

@@ -1,0 +1,107 @@
+<div class="grid">
+
+    <div class="col-12">
+
+        <div class="card px-6 py-6">
+
+            <p-toast></p-toast>
+
+            <!-- <p-toolbar styleClass="mb-3"> -->
+                <!-- <div class="row p-fluid p-formgrid grid field col-12">
+                    <div class="field col-12 md:col-10" >
+
+                        <h4 class="mb-4  font-family: Open Sans, sans-serif;">Rejected Comp-off</h4>
+
+                    </div>
+
+                </div> -->
+
+                <!-- <div class="row red">
+
+                    <h5 class="ml-4">Filters</h5>
+                    <div class="p-fluid p-formgrid grid">
+                        <div class="field col-12 md:col-2 ml-4">
+                            <label htmlFor="firstname2">From</label>
+                            <p-calendar inputId="dob" dateFormat="dd/mm/yy" (onSelect)="dateFromFilter($event)"
+                                class="ng-invalid " [(ngModel)]="dateFromFilterVariable"
+                                [showIcon]="false"></p-calendar>
+                        </div>
+                        <div class="field col-12 md:col-2">
+                            <label htmlFor="middlename">To</label>
+                            <p-calendar inputId="dob" dateFormat="dd/mm/yy" (onSelect)="dateToFilter($event)"
+                                class="ng-invalid " [(ngModel)]="dateToFilterVariable" [showIcon]="false"></p-calendar>
+                        </div>
+                        <div class="field col-12 md:col-2">
+                            <label htmlFor="lastname">Branch</label>
+
+                            <p-multiSelect [(ngModel)]="eventa.branch" [options]="branchList" optionValue="name"
+                                defaultLabel="Select a Branch" (onChange)="branchFilter($event)"
+                                (onDeselect)="branchFilter($event)" optionLabel="name" display="chip"></p-multiSelect>
+                        </div>
+
+
+                        <div class="field col-12 md:col-1 mt-4">
+                            <button pButton pRipple icon="pi pi-filter-slash" pTooltip="Clear All Filters"
+                                class="p-button-rounded p-button-outline mr-3" (click)="clearAllFilters()"></button>
+                        </div>
+                        <div class="field col-12 md:col-2"></div>
+                        <div class="field col-12 md:col-2 ml-8 mt-4">
+
+                            <span class=" mt-2 md:mt-0 p-input-icon-left">
+
+                                <i class="pi pi-search"></i>
+
+                                <input pInputText type="text" (input)="forSearch($event)" placeholder="Search..."
+                                    class="w-full sm:w-auto mr-3" />
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div> -->
+
+            <!-- </p-toolbar> -->
+            <div class="card">
+                <h5>Comp Off Requests</h5>
+                <p-table [value]="compOffList" [rows]="5" [scrollable]="true" [scrollHeight]="'300px'" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 20%; min-width: 1rem;">Employee NO</th>
+                            <th style="width: 25%; min-width: 7rem;" pSortableColumn="name">Name </th>
+                            <th style="width: 25%; min-width: 7rem;">Branch</th>
+                            <th style="width: 25%; min-width: 7rem;" pSortableColumn="price">Date </th>
+                            <th style="width: 50%; min-width: 7rem;">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-compOff>
+                        <tr>
+                            <td style="width: 20%; min-width: 3rem;">{{compOff.empNo}}</td>
+                            <td style="width: 25%; min-width: 7rem;">{{compOff.employeeName}}</td>
+                            <td style="width: 25%; min-width: 7rem;">{{compOff.branchName}}</td>
+                            <td style="width: 25%; min-width: 7rem;">{{compOff.date}}</td>
+                            <td style="width: 50%; min-width: 7rem;">
+                                <div style="
+                                inline-size: max-content;">
+                                <button pButton pRipple type="button" pTooltip="Accept" icon="pi pi-check" class="  p-button-success p-button-rounded mr-2 " (click)="acceptCompOff(compOff.id)"></button>
+                                <button pButton pRipple type="button" pTooltip="Permanent Delete" icon="pi pi-trash" class="p-button-danger p-button-rounded" (click)="rejectCompOff(compOff.id)" ></button>
+                            </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <div class="text-center mt-4">No Data Found</div>
+                      </ng-template>
+                </p-table>
+            </div>
+            <!-- <p-paginator [rows]="10" (onPageChange)="getAttendances($event)" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [totalRecords]="totalRecords" [rowsPerPageOptions]="[10,20,30,50]"></p-paginator> -->
+
+
+        </div>
+
+    </div>
+
+</div>

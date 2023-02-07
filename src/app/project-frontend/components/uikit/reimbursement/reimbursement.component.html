@@ -1,0 +1,48 @@
+
+<div class="card p-fluid" >
+    <h5>Reimbursement Parameters</h5>
+    <form [formGroup]="reimbursementForm" #f="ngForm" >
+    <div class="field grid" >
+        <label htmlFor="currentPetrolRate" class="col-12 mb-2 md:col-2 md:mb-0">Current Petrol Rate</label>
+        <div class="col-12 md:col-6">
+            <!-- <p-inputNumber  id="a" [(ngModel)]="a"   (onInput)="Onchange($event)" [disabled]="currentPetrolRateBoolean" mode="decimal" [showButtons]="false" [min]="0" [max]="10000">
+			</p-inputNumber> -->
+            <input pInputText id="currentPetrolRate" formControlName="currentPetrolRate" pKeyFilter="num" mode="decimal" decimal="2"  maxlength="10" (ngModelChange)="Onchange()" [(ngModel)]="reimbursementForm.value.currentPetrolRate" [attr.disabled]=" currentPetrolRateBoolean ? true : null" />
+        </div><label  class="col-12 mb-2 md:col-2 md:mb-0">₹</label>
+
+
+
+    </div>
+    <div class="field grid">
+        <label htmlFor="assumedAverage" class="col-12 mb-2 md:col-2 md:mb-0">Assumed Average</label>
+        <div class="col-12 md:col-6">
+            <input pInputText id="assumedAverage" formControlName="assumedAverage" pKeyFilter="num" decimal="2"  maxlength="10" (ngModelChange)="Onchange()" [(ngModel)]="reimbursementForm.value.assumedAverage" [attr.disabled]= " assumedAverageBoolean ? true : null" />
+        </div><label  class="col-12 mb-2 md:col-2 md:mb-0">Km/L</label>
+
+    </div>
+    <div class="field grid">
+        <label htmlFor="averageMaintenanceCost" class="col-12 mb-2 md:col-2 md:mb-0">Average Maintenance Cost</label>
+        <div class="col-12 md:col-6">
+            <input pInputText id="averageMaintenanceCost" formControlName="averageMaintenanceCost" pKeyFilter="num" decimal="2"  maxlength="10" [(ngModel)]="reimbursementForm.value.averageMaintenanceCost" (ngModelChange)="Onchange()" [attr.disabled]= " averageMaintenanceCostBoolean ? true : null"/>
+        </div><label  class="col-12 mb-2 md:col-2 md:mb-0">/Km</label>
+
+    </div>
+    <div class="flex justify-content-center">
+    <div class="flex justify-content-center col-12 mb-2 md:col-2  ">
+
+        <button pButton pRipple label="Edit" icon="pi pi-pencil" (click)="Click()" class="p-button-plain p-button-success mr-2 mb-2 "   > </button>
+        <button pButton pRipple p type="button" label="Save" icon="pi pi-save" (click)=" SaveParameters()"  class="p-button-sm p-button-raised mr-2 mb-2" ></button>
+    </div>
+</div>
+</form>
+</div>
+<div class="card p-fluid">
+
+    <h5>Reimbursement Calculations</h5>
+    <p-progressSpinner class="flex justify-content-center autoResize" *ngIf="reimbursementForm.value.calculatedCost==''"></p-progressSpinner>
+    <div class="card" *ngIf="reimbursementForm.value.calculatedCost!=''">
+      <div style="font-size: 400%;"  max-width="250px"
+       class="flex justify-content-center autoResize" [mathjax]="content" [style]="{'width':'100%','overflow':'auto!important'}"  ></div>
+
+    </div>
+</div>

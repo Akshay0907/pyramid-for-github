@@ -1,0 +1,213 @@
+    <div class="grid">
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card green-card mb-0" style="
+            cursor: pointer;
+        " (click)="employeesDetails()">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Number Of Employees</span>
+                        <div class="text-900 font-medium text-xl">{{totalEmployeeCount}}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-arrow-up-right text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+                <!-- <span class="text-green-500 font-medium">24 new </span>
+                <span class="text-500">since last visit</span> -->
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card green-card mb-0" style="
+            cursor: pointer;
+        " (click)="nonAppUserDetails()" >
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">App Users</span>
+                        <div class="text-900 font-medium text-xl">{{totalAppUser}}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-orange-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-user text-orange-500 text-xl"></i>
+                    </div>
+                </div>
+                <!-- <span class="text-green-500 font-medium">%52+ </span>
+                <span class="text-500">since last week</span> -->
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card green-card mb-0" style="
+            cursor: pointer;
+        " (click)="conveyanceSummary()">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Yesterday's Reimbursement</span>
+                        <div class="text-900 font-medium text-xl">Rs {{yesterdayReimbursement}}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-inbox text-cyan-500 text-xl"></i>
+                    </div>
+                </div>
+                <!-- <span class="text-green-500 font-medium">520  </span>
+                <span class="text-500">newly registered</span> -->
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card green-card mb-0" style="
+            cursor: pointer;
+        " (click)="liveTracking()">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Active Rides</span>
+                        <div class="text-900 font-medium text-xl">{{activeRides}}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-purple-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-map-marker text-purple-500 text-xl"></i>
+                    </div>
+                </div>
+                <!-- <span class="text-green-500 font-medium">85 </span>
+                <span class="text-500">responded</span> -->
+            </div>
+        </div>
+
+        <div class="col-12 xl:col-6">
+            <div class="card">
+                <h5>Comp Off Requests</h5>
+                <p-table [value]="compOffList" [rows]="5" [scrollable]="true" [scrollHeight]="'300px'" responsiveLayout="scroll" >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 20%; min-width: 1rem;">Employee No</th>
+                            <th style="width: 25%; min-width: 7rem;" pSortableColumn="name">Name </th>
+                            <th style="width: 25%; min-width: 7rem;">Branch</th>
+                            <th style="width: 25%; min-width: 7rem;" pSortableColumn="price">Date </th>
+                            <th style="width: 50%; min-width: 7rem;">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-compOff >
+                        <tr>
+                            <td style="width: 20%; min-width: 3rem;">{{compOff.empNo}}</td>
+                            <td style="width: 25%; min-width: 7rem;">{{compOff.employeeName}}</td>
+                            <td style="width: 25%; min-width: 7rem;">{{compOff.branchName}}</td>
+                            <td style="width: 25%; min-width: 7rem;">{{compOff.date}}</td>
+                            <td style="width: 50%; min-width: 7rem;">
+                                <div style="
+                                inline-size: max-content;">
+                                <button pButton pRipple type="button" pTooltip="Accept" icon="pi pi-check" class="  p-button-success p-button-rounded mr-2 " (click)="acceptCompOff(compOff.id)"></button>
+                                <button pButton pRipple type="button" pTooltip="Reject" icon="pi pi-times" class="p-button-danger p-button-rounded" (click)="rejectCompOff(compOff.id)"></button>
+                            </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                          <td colspan="5" style="place-content: center;">No Requests Found</td>
+                        </tr>
+                      </ng-template>
+                </p-table>
+            </div>
+            <div class="card">
+                <p-table #dt [value]="birthEmployee"
+                [rowHover]="true"  [scrollable]="true" [scrollHeight]="'300px'"
+                  responsiveLayout="scroll">
+                <ng-template pTemplate="caption">
+                    <div style="display: flex; align-items: center;">
+                        <div class="p-d-flex p-ai-center p-jc-between" style="text-align: center; width: 100%;">
+                          <h5 class="p-m-0">Date of Birth of Current Month Employees</h5>
+                        </div>
+                        <div style="margin-left: auto;">
+                          <p-button icon="pi pi-arrow-down p-button-danger" pTooltip="Download" (click)="downloadCurrentMonthBirthdayCsv()" ></p-button>
+                        </div>
+                      </div>
+
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th  style=" max-inline-size: fit-content; width: 20%; min-width: 5rem;" ></th>
+                        <th  style="width: 35%; min-width: 7rem;" >Name </th>
+                        <th style="width: 35%; min-width: 7rem;">Date Of Birth </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-employee>
+                    <tr width="100" height="60" >
+                        <td style="max-inline-size: fit-content;width: 10%;min-width: 2rem;"><p-avatar image="{{employee.profile}}" size="large" shape="circle"></p-avatar></td>
+                        <td style="width: 35%; min-width: 7rem;">
+
+                            {{employee.name}}</td>
+
+                        <td class="'product-badge status-'" style="width: 35%; min-width: 7rem;">
+                            <span [class]="'customer-badge status-proposal'">{{employee.dob}}</span></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr >
+                        <td colspan="5" style="place-content: center;">No Data Found</td>
+                </tr>
+                  </ng-template>
+            </p-table>
+
+              </div>
+
+              <div class="card">
+                <h5>Total Number Of Rides In Last 6 Working Days</h5>
+
+                <p-chart type="line" [data]="lineRideData" [options]="chartOptions"></p-chart>
+            </div>
+
+        </div>
+
+        <div class="col-12 xl:col-6">
+
+            <div class="card" style="text-align: -webkit-center;" *ngIf="yesterdayAttendanceCount[0]>0 || yesterdayAttendanceCount[1]>0">
+                <h5>Yesterday's Attendance</h5>
+                <div class="xl:col-5 center">
+
+                <p-chart type="pie"  [data]="datapie" [options]="chartOptions"  [style]="{'width': '10px'}"></p-chart>
+            </div>
+        </div>
+
+            <div class="card">
+                <h5>Last Six Months Reimbursement</h5>
+                <p-chart type="bar" [data]="data" ></p-chart>
+                <!-- <p-chart type="line" [data]="data" [options]="chartOptions"></p-chart> -->
+            </div>
+            <div class="card">
+                <h5>Total Number Of Distance In Last 6 Working Days</h5>
+
+                <p-chart type="line" [data]="lineDistanceData" [options]="chartOptions"></p-chart>
+            </div>
+
+            <!-- <div class="px-4 py-5 shadow-2 flex flex-column md:flex-row md:align-items-center justify-content-between mb-3" [ngStyle]="{borderRadius: '1rem', background: 'linear-gradient(0deg, rgba(0, 123, 255, 0.5), rgba(0, 123, 255, 0.5)), linear-gradient(92.54deg, #1C80CF 47.88%, #FFFFFF 100.01%)'}">
+           <div>
+               <div class="text-blue-100 font-medium text-xl mt-2 mb-3">TAKE THE NEXT STEP</div>
+               <div class="text-white font-medium text-5xl">Try PrimeBlocks</div>
+           </div>
+           <div class="mt-4 mr-auto md:mt-0 md:mr-0">
+               <a target="_blank" href="https://www.primefaces.org/primeblocks-ng" class="p-button font-bold px-5 py-3 p-button-warning p-button-rounded p-button-raised">
+                   Get Started
+               </a>
+           </div>
+        </div> -->
+    </div>
+</div>
+
+<style>
+    @media (max-width: 767px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    @media (min-width: 768px) and (max-width: 991px) {
+        .grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    @media (min-width: 1200px) {
+        .grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+</style>
+

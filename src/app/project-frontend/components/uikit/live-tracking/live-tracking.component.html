@@ -1,0 +1,129 @@
+
+	<div class="col-12">
+		<div class="card">
+			<h5>Live Tracking</h5>
+			<p-dataView #dv [value]="LiveTrackingDetails" [paginator]="true" [rows]="36" filterBy="name,empNo" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+				<ng-template pTemplate="header">
+					<div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+						<p-dropdown [options]="sortOptions" placeholder="Sort By Start Time" (onChange)="onSortChange($event)"></p-dropdown>
+						<span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input type="search" pInputText placeholder="Search by Name" (input)="onGlobalFilter(dv,$event)">
+                        </span>
+						<p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+					</div>
+				</ng-template>
+
+				<ng-template let-rideDetail pTemplate="listItem">
+					<div class="col-12 red">
+						<div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+							<img [src]="rideDetail.profile" width="60" height="80" [alt]="rideDetail.profile" class="my-4 md:my-0 w-3 md:w-10rem shadow-2 mr-5"/>
+							<div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+								<div class="font-bold text-2xl">{{rideDetail.name}}</div>
+								<div class="mb-1">{{rideDetail.empNo}}</div>
+								<div   styleClass="mb-1">{{rideDetail.branchName}}</div>
+								<!-- <div class="flex align-items-center mt-2">
+
+								Reason:	{{rideDetail.reasonForRide}}
+								</div> -->
+							</div>
+							<div class="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
+								<span class="text-1xl font-semibold mb-2 align-self-center md:align-self-end">{{rideDetail.startTime}}</span>
+
+								<span [class]="'product-badge status-instock mb-2'"> Reason: {{rideDetail.reasonForRide}}</span>
+                                <p-button icon="pi pi-map-marker" (onClick)="mapOpen(rideDetail.rideid)" label="Location"  styleClass="mb-2 p-button-sm"></p-button>
+							</div>
+						</div>
+					</div>
+				</ng-template>
+
+				<ng-template let-rideDetail pTemplate="gridItem">
+					<div class="col-12 md:col-2 ">
+						<div class="card m-3 border-1 surface-border red" style=" height: auto;
+                        inline-size: fit-content;">
+							<div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+								<div class="flex align-items-center">
+									<!-- <i class="pi pi-tag mr-2"></i> -->
+									<span class="font-semibold">{{rideDetail.startTime}}</span>
+								</div>
+								<!-- <span [class]="'rideDetail-badge status-' + rideDetail.inventoryStatus.toLowerCase()">{{rideDetail.inventoryStatus}}</span> -->
+							</div>
+							<div class="flex flex-column align-items-center text-center mb-3">
+								<img [src]="rideDetail.profile" width="150" height="80" [alt]="rideDetail.name" class="w-5 shadow-2 my-3 mx-0"/>
+								<div class="text-2xl font-bold">{{rideDetail.name}}</div>
+								<div class="mb-1">{{rideDetail.empNo}}</div>
+								<div  >{{rideDetail.branchName}}</div>
+							</div>
+							<div class="flex align-items-center justify-content-between">
+								<div><span class="product-badge status-instock text-1xl font-semibold mr-2">Reason: {{rideDetail.reasonForRide}}</span></div>
+								<p-button icon="pi pi-map-marker" pTooltip="Location" (onClick)="mapOpen(rideDetail.rideid)" [disabled]="rideDetail.inventoryStatus === 'OUTOFSTOCK'"></p-button>
+							</div>
+						</div>
+					</div>
+				</ng-template>
+			</p-dataView>
+		</div>
+	</div>
+
+
+    <p-dialog header="Route" [resizable]="false" [modal]="true" (onHide)="hideDialog();" [maximizable]="true" appendTo="body" [(visible)]="mapDialog" [style]="{width: '75vw'}" [contentStyle]="{height: '300px'}">
+<!-- <div class="detection-info">
+    <div class="place-area">
+        <div class="map-area" #map></div>
+        <ng-template #noMap>
+
+        </ng-template>
+    </div>
+</div> -->
+<!-- <app-plot-map #map *ngIf="liveCoordinates" [data]="liveCoordinates" ></app-plot-map> -->
+
+
+<!-- <div class="map-container">
+    <div class="map-frame">
+      <div id="map"></div>
+    </div>
+  </div> -->
+    </p-dialog>
+
+
+    <style>
+        /* Add a media query for small screens */
+        @media (max-width: 600px) {
+            /* Change the font size of the ride details */
+            .card {
+                font-size: 0.8rem;
+            }
+
+            /* Change the size of the profile image */
+            img {
+                width: 40px;
+                height: 60px;
+            }
+
+            /* Stack the grid items vertically on small screens */
+            p-dataview[layout="grid"] {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* Add a media query for medium screens */
+        @media (min-width: 600px) and (max-width: 900px) {
+            /* Change the spacing between grid items */
+            .card {
+                margin: 10px;
+            }
+        }
+
+         /* Add a media query for Galaxy Fold */
+         @media (max-width: 820px) and (min-width: 720px) {
+            /* Add a flex-wrap property to the sort and search block */
+            .flex.flex-column.md:flex-row.md:justify-content-between.gap-2 {
+                flex-wrap: wrap;
+            }
+
+            /* Add a width to the sort and search block */
+            .p-input-icon-left {
+                width: 100%;
+            }
+        }
+</style>
+

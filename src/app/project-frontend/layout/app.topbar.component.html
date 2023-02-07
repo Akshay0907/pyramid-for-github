@@ -1,0 +1,77 @@
+<div class="layout-topbar">
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
+        <i class="pi pi-bars"></i>
+    </button>
+    <a class=" pl-2 layout-topbar-logo flex " routerLink="">
+        <img
+            src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'pyramidlogo' : 'pyramidlogo'}}.jpg">
+    </a>
+
+
+
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button"
+        (click)="layoutService.showProfileSidebar()">
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+
+    <div #topbarmenu class="layout-topbar-menu"
+        [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <button class="p-link">
+
+            <i class="pi pi-bell mt-1 p-text-secondary" pBadge badgeDisabled="totalRecords==0"
+                (click)="op.toggle($event);" (click)="fetchNotifications();markNotificationsAsRead()"
+                style="font-size: 1.7rem" [value]="totalRecords"></i>
+
+
+        </button>
+        <button class="p-link layout-topbar-button">
+            <i class="pi pi-calendar"></i>
+            <span>Calendar</span>
+        </button>
+        <button class="p-link layout-topbar-button">
+            <i class="pi pi-user"></i>
+            <span>Profile</span>
+        </button>
+        <button class="p-link layout-topbar-button" (click)="forLogOut()" [routerLink]="'auth/login'">
+            <i class="pi pi-sign-out"></i>
+            <span>LogOut</span>
+        </button>
+    </div>
+</div>
+
+
+<p-overlayPanel #op [showCloseIcon]="false" [style]="{width: '450px'}">
+
+    <ng-template pTemplate>
+        <!-- <div class="grid p-fluid mt-3">
+        <div class="field col-12 md:col-4">
+        <div class="p-float-label">
+            <p-checkbox name="groupname" value="" ></p-checkbox>
+            Show unread notifications only
+
+        </div>
+        <div class="p-float-label">
+            <label for="permanentAddressDistrict">Mark all as read</label>
+        </div>
+    </div>
+</div> -->
+        <p-table [value]="notifications" selectionMode="single" [(selection)]="selectedNotification" [paginator]="false" scrollDirection="both"  responsiveLayout="scroll"
+            [rows]="totalRecords">
+
+            <ng-template pTemplate="body" let-rowData let-notification>
+                <tr [ngClass]="{
+                    'read' : notification.read==true,
+                    'notRead':notification.read==false}" [pSelectableRow]="rowData">
+
+                    <td>{{notification.message}}</td>
+
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <div class="text-center">No Notifications Found</div>
+      </ng-template>
+
+</p-overlayPanel>

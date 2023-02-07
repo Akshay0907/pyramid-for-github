@@ -1,0 +1,243 @@
+<div class="grid">
+	<div class="col-12">
+		<div class="card px-6 py-6">
+			<p-toast position="top-right"></p-toast>
+			<p-toolbar styleClass="mb-4">
+				<ng-template pTemplate="left">
+					<div class="my-2">
+						<button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+							(click)="openBranchDialog(1,false)"></button>
+						<button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+							(click)="deleteSelectedProducts(selectedBranchs)"
+							[disabled]="!selectedBranchs || !selectedBranchs.length"></button>
+					</div>
+				</ng-template>
+
+
+			</p-toolbar>
+
+			<p-table #dt [value]="branchs" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+				[globalFilterFields]="['id','name','address','state','city','district']" [rows]="10" [paginator]="true"
+				[rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+				[(selection)]="selectedBranchs" selectionMode="multiple" [rowHover]="true" dataKey="id">
+				<ng-template pTemplate="caption">
+					<div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+						<h5 class="m-0">Branch List</h5>
+						<span class="block mt-2 md:mt-0 p-input-icon-left">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+								class="w-full sm:w-auto" />
+						</span>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr>
+						<th style="width: 3rem">
+							<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+						</th>
+						<!-- <th pSortableColumn="id">Branch Id <p-sortIcon field="id"></p-sortIcon></th> -->
+						<th pSortableColumn="name">Branch Name <p-sortIcon field="name"></p-sortIcon>
+						</th>
+						<th pSortableColumn="address">Address <p-sortIcon field="address"></p-sortIcon>
+						</th>
+						<th pSortableColumn="city">City <p-sortIcon field="city"></p-sortIcon>
+						</th>
+						<th pSortableColumn="district">District <p-sortIcon field="district"></p-sortIcon>
+						</th>
+						<th pSortableColumn="state">State <p-sortIcon field="state"></p-sortIcon>
+						</th>
+						<th pSortableColumn="latitude">Latitude <p-sortIcon field="latitude"></p-sortIcon>
+						</th>
+						<th pSortableColumn="longitude">Longitude <p-sortIcon field="longitude"></p-sortIcon>
+						</th>
+						<th></th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-branchs>
+					<tr>
+						<td>
+							<p-tableCheckbox [value]="branchs"></p-tableCheckbox>
+						</td>
+						<td style="width:14%; min-width:10rem;">
+							<span class="p-column-title">Branch Name</span>
+							{{branchs.name}}
+						</td>
+
+						<td style="width:14%; min-width:8rem;">
+							<span class="p-column-title">Address</span>
+							{{branchs.address}}
+						</td>
+						<td style="width:14%; min-width:10rem;">
+							<span class="p-column-title">City</span>
+							{{branchs.city}}
+						</td>
+						<td style="width:14%; min-width:10rem;">
+							<span class="p-column-title">District</span>
+							{{branchs.district}}
+						</td>
+						<td style="width:14%; min-width:10rem;">
+							<span class="p-column-title">State</span>
+							{{branchs.state}}
+						</td>
+						<td style="width:14%; min-width:10rem;">
+							<span class="p-column-title">State</span>
+							{{branchs.latitude}}
+						</td>
+						<td style="width:14%; min-width:10rem;">
+							<span class="p-column-title">State</span>
+							{{branchs.longitude}}
+						</td>
+						<td>
+							<div class="flex">
+								<button pButton pRipple icon="pi pi-pencil"
+									class="p-button-rounded p-button-success mr-2" pTooltip="Edit"
+									(click)="openBranchDialog(branchs,true)"></button>
+								<button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" pTooltip="Delete"
+									(click)="deleteProduct(branchs)"></button>
+							</div>
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</div>
+
+
+
+		<p-dialog (onHide)="hideBranchDialog()" [(visible)]="createEditBranchDialog" [style]="{width: '450px'}"
+			header="Branch Details" [modal]="true" class="p-fluid">
+			<ng-template pTemplate="content">
+
+				<form [formGroup]="createEditBranchForm">
+					<img src="assets/layout/images/{{'true' ? 'pyramidlogo' : 'pyramidlogo'}}.jpg" width="150"
+						class="mt-0 mx-auto mb-5 block shadow-2">
+
+					<div class="field">
+						<label for="name">Branch Name <span class="asterisk">*</span></label>
+						<input type="text" pInputText id="name" formControlName="name" required autofocus
+							[ngClass]="{'ng-invalid ng-dirty' : createEditBranchForm.controls['name'].invalid && (createEditBranchForm.controls['name'].dirty || createEditBranchForm.controls['name'].touched || clickedSubmit)}" />
+						<div *ngIf="createEditBranchForm.controls['name'].invalid && (createEditBranchForm.controls['name'].dirty || createEditBranchForm.controls['name'].touched || clickedSubmit)"
+							class="alert">
+							<div style="color: red;" *ngIf="createEditBranchForm.controls['name'].errors?.['required']">
+								Branch Name is required.
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label for="address">Address <span class="asterisk">*</span></label>
+						<input type="text" pInputText id="address" formControlName="address" required autofocus
+							[ngClass]="{'ng-invalid ng-dirty' : createEditBranchForm.controls['address'].invalid && (createEditBranchForm.controls['address'].dirty || createEditBranchForm.controls['address'].touched || clickedSubmit)}" />
+						<div *ngIf="createEditBranchForm.controls['address'].invalid && (createEditBranchForm.controls['address'].dirty || createEditBranchForm.controls['address'].touched || clickedSubmit)"
+							class="alert">
+							<div style="color: red;"
+								*ngIf="createEditBranchForm.controls['address'].errors?.['required']">
+								Branch Address is required.
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label for="city">City <span class="asterisk">*</span></label>
+						<input type="text" pInputText id="city" formControlName="city" required autofocus
+							[ngClass]="{'ng-invalid ng-dirty' : createEditBranchForm.controls['city'].invalid && (createEditBranchForm.controls['city'].dirty || createEditBranchForm.controls['city'].touched || clickedSubmit)}" />
+						<div *ngIf="createEditBranchForm.controls['city'].invalid && (createEditBranchForm.controls['city'].dirty || createEditBranchForm.controls['city'].touched || clickedSubmit)"
+							class="alert">
+							<div style="color: red;" *ngIf="createEditBranchForm.controls['city'].errors?.['required']">
+								City is required.
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label for="name">State <span class="asterisk">*</span></label>
+						<p-dropdown
+							[ngClass]="{'ng-invalid ng-dirty' : createEditBranchForm.controls['state'].invalid && (createEditBranchForm.controls['state'].dirty || createEditBranchForm.controls['state'].touched || clickedSubmit)}"
+							[filter]="true" filterBy="label" formControlName="state" placeholder="Select State"
+							[showClear]="true" [style]="{'width':'100%'}" [options]="stateList"
+							(onChange)="getDistricts()"></p-dropdown>
+						<div *ngIf="createEditBranchForm.controls['state'].invalid && (createEditBranchForm.controls['state'].dirty || createEditBranchForm.controls['state'].touched || clickedSubmit)"
+							class="alert">
+							<div style="color: red;"
+								*ngIf="createEditBranchForm.controls['state'].errors?.['required']">
+								State is required.
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label for="district">District <span class="asterisk">*</span></label>
+						<p-dropdown
+							[ngClass]="{'ng-invalid ng-dirty' : createEditBranchForm.controls['district'].invalid && (createEditBranchForm.controls['district'].dirty || createEditBranchForm.controls['district'].touched || clickedSubmit)}"
+							[filter]="true" filterBy="label" formControlName="district" optionlabel="label"
+							[options]="DistrictList" placeholder="Select District" [showClear]="true"
+							[style]="{'width':'100%'}"></p-dropdown>
+						<div *ngIf="createEditBranchForm.controls['district'].invalid && (createEditBranchForm.controls['district'].dirty || createEditBranchForm.controls['district'].touched || clickedSubmit)"
+							class="alert">
+							<div style="color: red;"
+								*ngIf="createEditBranchForm.controls['district'].errors?.['required']">
+								District is required.
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label for="state">Latitude <span class="asterisk">*</span></label>
+						<input type="text" pInputText id="latitude" formControlName="latitude" required autofocus
+							[ngClass]="{'ng-invalid ng-dirty' : createEditBranchForm.controls['latitude'].invalid && (createEditBranchForm.controls['latitude'].dirty || createEditBranchForm.controls['latitude'].touched || clickedSubmit)}" />
+						<div *ngIf="createEditBranchForm.controls['latitude'].invalid && (createEditBranchForm.controls['latitude'].dirty || createEditBranchForm.controls['latitude'].touched || clickedSubmit)"
+							class="alert">
+							<div style="color: red;"
+								*ngIf="createEditBranchForm.controls['latitude'].errors?.['required']">
+								Latitude not valid.
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label for="longitude">Longitude <span class="asterisk">*</span></label>
+						<input type="text" pInputText id="longitude" formControlName="longitude" required autofocus
+							[ngClass]="{'ng-invalid ng-dirty' : createEditBranchForm.controls['longitude'].invalid && (createEditBranchForm.controls['longitude'].dirty || createEditBranchForm.controls['longitude'].touched || clickedSubmit)}" />
+						<div *ngIf="createEditBranchForm.controls['longitude'].invalid && (createEditBranchForm.controls['longitude'].dirty || createEditBranchForm.controls['longitude'].touched || clickedSubmit)"
+							class="alert">
+							<div style="color: red;"
+								*ngIf="createEditBranchForm.controls['longitude'].errors?.['required']">
+								Longitude not valid.
+							</div>
+						</div>
+						<div style="color: red;"
+							*ngIf="!createEditBranchForm.controls['longitude'].valid && createEditBranchForm.controls['longitude'].touched && !createEditBranchForm.controls['longitude'] && clickedSubmit">
+							This input filed is not valid.</div>
+					</div>
+				</form>
+			</ng-template>
+
+			<ng-template pTemplate="footer">
+				<button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+					(click)="hideBranchDialog()"></button>
+				<button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+					(click)="saveBranch()"></button>
+			</ng-template>
+		</p-dialog>
+
+		<p-dialog [(visible)]="deleteBranchDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+			<div class="flex align-items-center justify-content-center">
+				<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+				<span>Are you sure you want to delete <b>{{branchObjectForDelete.name}}</b>?</span>
+			</div>
+			<ng-template pTemplate="footer">
+				<button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+					(click)="deleteBranchDialog = false"></button>
+				<button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+					(click)="confirmDelete(branchObjectForDelete.id)"></button>
+			</ng-template>
+		</p-dialog>
+
+		<p-dialog [(visible)]="deleteBranchesDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+			<div class="flex align-items-center justify-content-center">
+				<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+				<span>Are you sure you want to delete selected products?</span>
+			</div>
+			<ng-template pTemplate="footer">
+				<button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+					(click)="deleteBranchesDialog = false"></button>
+				<button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+					(click)="confirmDeleteSelected()"></button>
+			</ng-template>
+		</p-dialog>
+	</div>
+</div>
